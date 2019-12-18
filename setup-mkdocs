@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -e ${HOME}/.vpython/3/mkdocs/bin/python ]; then
+    echo "Serving mkdocs from current directory"
+    source /Users/ashish/.vpython/3/mkdocs/bin/activate
+    mkdocs serve
+else
+    echo "Setting up mkdocs"
+    curdir=`pwd`
+    mkdir -p  ${HOME}/.vpython/3
+    cd /Users/ashish/.vpython/3
+    virtualenv mkdocs
+    source /Users/ashish/.vpython/3/mkdocs/bin/activate
+    pip install mkdocs
+    pip install mkdocs-material
+    cd ${curdir}
+fi

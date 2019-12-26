@@ -1,10 +1,8 @@
 #!/bin/bash
 
-if [ -e ${HOME}/.vpython/3/mkdocs/bin/python ]; then
-    echo "Serving mkdocs from current directory"
-    source /Users/ashish/.vpython/3/mkdocs/bin/activate
-    mkdocs serve
-else
+curdir=`pwd`
+
+if [ ! -e ${HOME}/.vpython/3/mkdocs/bin/python ]; then
     echo "Setting up mkdocs"
     curdir=`pwd`
     mkdir -p  ${HOME}/.vpython/3
@@ -15,9 +13,17 @@ else
     pip install mkdocs-material
     pip install pymdown-extensions
     cd ${curdir}
+    deactivate
+fi
+
+source /Users/ashish/.vpython/3/mkdocs/bin/activate
 
 if [ ! -e ${curdir}/mkdocs.yml ];then
-echo "Creating file ${curdir}/mkdocs.yml ..."
+echo "Initializing ..."
+cd ${curdir}
+mkdocs init .
+
+echo "Updating file ${curdir}/mkdocs.yml ..."
 cat > ${curdir}/mkdocs.yml <<EOL
 site_name: Project Documents
 
@@ -102,4 +108,5 @@ markdown_extensions:
 EOL
 fi
 
-fi
+echo "Serving mkdocs from current directory"
+mkdocs serve

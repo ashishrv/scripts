@@ -1,24 +1,28 @@
 #!/bin/bash
 
 curdir=`pwd`
+pybin=`which python`
+py_bin_dir=$(dirname $pybin)
 
-if [ ! -e ${HOME}/.vpython/3/mkdocs/bin/python ]; then
-    echo "Setting up mkdocs"
-    curdir=`pwd`
-    mkdir -p  ${HOME}/.vpython/3
-    cd /Users/ashish/.vpython/3
-    virtualenv mkdocs
-    source /Users/ashish/.vpython/3/mkdocs/bin/activate
-    pip install mkdocs
-    pip install mkdocs-material
-    pip install pymdown-extensions
-    cd ${curdir}
-    deactivate
+if [[ ! -f ${py_bin_dir}/activate ]]; then
+source ${HOME}/.vpython/3/3.7.4/venv-3.7.4/bin/activate
 fi
 
-source /Users/ashish/.vpython/3/mkdocs/bin/activate
+if [[ ! -f ${py_bin_dir}/activate ]]; then
+    echo "Tried virtualenv: ${HOME}/.vpython/3/3.7.4/venv-3.7.4"
+    echo "Could not use a predefined python virtual environment ..."
+    exit 1
+fi
 
-if [ ! -e ${curdir}/mkdocs.yml ];then
+if [[ ! -f ${py_bin_dir}/mkdocs ]]; then
+    echo "This is not a python virtual environment which has mkdocs installed ..."
+    exit 1
+fi
+
+mkdir -p ${HOME}/works/docs
+cd ${HOME}/works/docs
+
+if [ ! -e ${HOME}/works/docs/mkdocs.yml ];then
 echo "Initializing ..."
 cd ${curdir}
 mkdocs init .
@@ -108,5 +112,6 @@ markdown_extensions:
 EOL
 fi
 
-echo "Serving mkdocs from current directory"
+echo "Serving mkdocs from current directory ..."
 mkdocs serve
+cd ${curdir}

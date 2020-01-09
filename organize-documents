@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+
+import os
+import glob2
+import datetime
+import shutil
+
+default_target_directory=os.path.join(os.environ['HOME'], 'Downloads')
+default_documents_types = ['pdf', 'epub', 'mobi', 'azw3', 'djvu', 'chm', 'mobi']
+print(default_target_directory)
+
+doucument_globs = [os.path.join(default_target_directory, '*.{}'.format(x)) for x in default_documents_types]
+for globname in doucument_globs:
+    for filename, _ in glob2.iglob(globname, with_matches=True):
+        print(filename)
+        # Get modification time stamp
+        statinfo = os.stat(filename)
+        # print(statinfo.st_mtime)
+        # Convert to date time object
+        mod_timestamp = datetime.datetime.fromtimestamp(statinfo.st_mtime)
+        mod_timestamp_year = mod_timestamp.strftime('%Y')
+        mod_timestamp_month = mod_timestamp.strftime('%m')
+        mod_timestamp_day = mod_timestamp.strftime('%d')
+        mod_timestamp_day_modten = str(int(mod_timestamp_day) % 10)
+        # print(mod_timestamp_year, mod_timestamp_month, mod_timestamp_day_modten)
+        organized_dir_path = os.path.join(default_target_directory,
+                                          mod_timestamp_year,
+                                          mod_timestamp_month,
+                                          mod_timestamp_day_modten)
+        # print(organized_dir_path)
+        os.makedirs(organized_dir_path, exist_ok=True)
+        filename_base = os.path.basename(filename)
+        filename_final = os.path.join(organized_dir_path, filename_base)
+        print(filename_final)
+        try:
+            if filename_final != filename:
+                shutil.move(filename, filename_final)
+        except:
+            pass

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -f ${HOME}/documents.txt
+find /Volumes/arvdrive -type f \( -name "*.pdf" -or -name "*.epub" -or -name "*.mobi" -or -name "*.chm" -or -name "*.djvu" -or -name "*.azw" -or -name "*.azw3" \) | tee -a  ${HOME}/documents.txt
